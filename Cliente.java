@@ -20,7 +20,7 @@ class MarcoCliente extends JFrame{  // es el marco de la ventana
 	
 	public MarcoCliente(){
 		
-		setBounds(600,300,200,350);  // establece los limites
+		setBounds(600,300,400,100);  // establece los limites
 		
 		LaminaMarcoCliente milamina = new LaminaMarcoCliente();
 		
