@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -47,10 +49,12 @@ class LaminaMarcoCliente extends JPanel{
 		nick = new JTextField(5);
 		add(nick);
 		
+		JLabel texto = new JLabel("-CHAT-");
+		
 		ip = new JTextField(8);
 		add(ip);
 		
-		JLabel texto = new JLabel("-CHAT-");
+
 		
 		add(texto); //añade a JPanel
 		
@@ -89,6 +93,12 @@ class LaminaMarcoCliente extends JPanel{
 				datos.setIp(ip.getText());
 				datos.setMensaje(campo1.getText());
 				
+				ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream());   // con esto se envían paquetes, en vez de datos, como en el DataOutputStream
+				
+				paquete_datos.writeObject(datos);
+				
+				misocket.close();
+				
 				/*DataOutputStream flujo_salida = new DataOutputStream(misocket.getOutputStream());
 				
 				flujo_salida.writeUTF(campo1.getText());  // escribe en el flujo lo que hay en el campo1
@@ -110,7 +120,7 @@ class LaminaMarcoCliente extends JPanel{
 	}
 }
 
-class PaqueteEnvio {
+class PaqueteEnvio implements Serializable {  // todo objeto que se envía por la red ha de ser serializable
 	
 	private String nick, ip, mensaje;
 	
