@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
@@ -20,7 +21,7 @@ class MarcoCliente extends JFrame{  // es el marco de la ventana
 	
 	public MarcoCliente(){
 		
-		setBounds(600,300,400,100);  // establece los limites
+		setBounds(600,300,400,600);  // establece los limites
 		
 		LaminaMarcoCliente milamina = new LaminaMarcoCliente();
 		
@@ -31,16 +32,31 @@ class MarcoCliente extends JFrame{  // es el marco de la ventana
 	}
 }
 
+/*
+ * La clase que crea el panel
+ */
+
 class LaminaMarcoCliente extends JPanel{
 	
-	private JTextField campo1;
+	private JTextField campo1, nick, ip;
+	private JTextArea campochat;
 	private JButton miboton;
 	
 	public LaminaMarcoCliente(){
 		
-		JLabel texto = new JLabel("CLIENTE");
+		nick = new JTextField(5);
+		add(nick);
+		
+		ip = new JTextField(8);
+		add(ip);
+		
+		JLabel texto = new JLabel("-CHAT-");
 		
 		add(texto); //añade a JPanel
+		
+		campochat = new JTextArea(12, 20);  //los parámetros son las coordenadas
+		
+		add(campochat);
 		
 		campo1 = new JTextField(20);
 		
@@ -66,11 +82,20 @@ class LaminaMarcoCliente extends JPanel{
 			try {
 				Socket misocket = new Socket("192.168.1.13", 9999);
 				
-				DataOutputStream flujo_salida = new DataOutputStream(misocket.getOutputStream());
+				PaqueteEnvio datos = new PaqueteEnvio();
+				
+				// damos  valores a los atributos del objeto de clase PaqueteEnvio
+				datos.setNick(nick.getText());
+				datos.setIp(ip.getText());
+				datos.setMensaje(campo1.getText());
+				
+				/*DataOutputStream flujo_salida = new DataOutputStream(misocket.getOutputStream());
 				
 				flujo_salida.writeUTF(campo1.getText());  // escribe en el flujo lo que hay en el campo1
 				
 				flujo_salida.close();  // se cierra el flujo de datos
+				
+				*/
 				
 			} catch (UnknownHostException e1) {
 				// TODO Auto-generated catch block
@@ -80,11 +105,53 @@ class LaminaMarcoCliente extends JPanel{
 				System.out.println(e1.getMessage());
 			}
 			
-			
 		}
 		
 	}
 }
+
+class PaqueteEnvio {
+	
+	private String nick, ip, mensaje;
+	
+	public PaqueteEnvio(){}
+	
+	/* No es necesario este contructor
+	 public PaqueteEnvio (String nick, String ip, String mensaje){
+	 
+		this.nick = nick;
+		this.ip = ip;
+		this.mensaje = mensaje;
+	}
+	*/
+
+	public String getNick() {
+		return nick;
+	}
+
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getMensaje() {
+		return mensaje;
+	}
+
+	public void setMensaje(String mensaje) {
+		this.mensaje = mensaje;
+	}
+	
+
+}
+
 
 public class Cliente {
 
