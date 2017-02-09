@@ -4,8 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -38,7 +40,7 @@ class MarcoCliente extends JFrame{  // es el marco de la ventana
  * La clase que crea el panel
  */
 
-class LaminaMarcoCliente extends JPanel{
+class LaminaMarcoCliente extends JPanel implements Runnable{
 	
 	private JTextField campo1, nick, ip;
 	private JTextArea campochat;
@@ -73,6 +75,10 @@ class LaminaMarcoCliente extends JPanel{
 		miboton.addActionListener(mievento);	// se ejecuta la acción
 		
 		add(miboton);
+		
+		Thread mihilo = new Thread(this);  // para que constantemente esté escuchando como servidor (ServerSocket)
+		
+		mihilo.start();
 	}
 	
 	private class EnviaTexto implements ActionListener{   // se crea un evento que reacciones a la pulsación de un botón
@@ -118,7 +124,42 @@ class LaminaMarcoCliente extends JPanel{
 		}
 		
 	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+		try{
+			
+			ServerSocket servidor_cliente = new ServerSocket(9090);
+			
+			Socket cliente;
+			
+			PaqueteEnvio paquete_recibido;
+			
+			while(true){
+				
+				cliente = servidor_cliente.accept();
+				
+				ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
+				
+				paquete_recibido = (PaqueteEnvio) flujo_entrada.readObject();
+				
+				campochat.append("\n" + paquete_recibido.getNick() + ": " + paquete_recibido.getMensaje());
+			}
+			
+			
+		}catch(Exception e){
+			
+			System.out.println(e.getMessage());
+		}
+		
+		
+		
+	}
+
 }
+
 
 class PaqueteEnvio implements Serializable {  // todo objeto que se envía por la red ha de ser serializable
 	
