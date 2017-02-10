@@ -88,6 +88,8 @@ class LaminaMarcoCliente extends JPanel implements Runnable{
 			
 			//System.out.println(campo1.getText());  Para que al pulsar en el botón aparezcan los datos del campo de texto campo1
 			
+			campochat.append(campo1.getText());  //para que aparezca en el JTextArea del cliente sus propias frases
+			
 			try {
 				Socket misocket = new Socket("192.168.1.13", 9999);
 				
